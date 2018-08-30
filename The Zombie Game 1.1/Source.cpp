@@ -22,6 +22,53 @@ void displayStats(){
 		energy=0;
 	}
 	cout<<"Health: "<<health<<endl<<"Hunger: "<<hunger<<endl<<"Thirst: "<<thirst<<endl<<"Energy: "<<energy<<endl;
+
+	if (p2==true) {
+		if (p2health<0){
+			p2health=0;
+		}
+		if (p2hunger<0){
+			p2hunger=0;
+		}
+		if (p2thirst<0){
+			p2thirst=0;
+		}
+		if (p2energy<0){
+			p2energy=0;
+		}
+		cout<<p2name<<"'s Health: "<<p2health<<endl<<p2name<<"'s Hunger: "<<p2hunger<<endl<<p2name<<"'s Thirst: "<<p2thirst<<endl<<p2name<<"'s Energy: "<<p2energy<<endl;
+	}
+}
+
+void findP2() {
+	string friends;
+	if (p2==false){
+		int find;
+		find=rand()%7;
+		if (find==1){
+			cout<<name<<" found another survivor"<<endl;
+			_sleep(1000);
+			cout<<"Do you want to be friends?: ";
+			cin>>friends;
+			_sleep(1000);
+			if (friends=="yes"||friends=="y"){
+				cout<<"What is there name?: ";
+				cin>>p2name;
+				_sleep(1000);
+				cout<<name<<" "<<p2name<<" are now friends"<<endl;
+				_sleep(1000);
+				p2health=rand()%100+1;
+				p2hunger=rand()%100+1;
+				p2thirst=rand()%100+1;
+				p2energy=rand()%100+1;
+				p2=true;
+				displayStats();
+				_sleep(1000);
+			}
+			else {
+			}
+		}
+	}
 }
 
 void checkAlive(){
@@ -41,6 +88,25 @@ void checkAlive(){
 		cout<<name<<" collapsed of exhaustion and died"<<endl;
 		alive=false;
 	}
+
+	if (p2==true){
+		if (p2health<=0){
+			cout<<p2name<<" is now a zombie"<<endl;
+			p2=false;
+		}
+		if (p2hunger<=0){
+			cout<<p2name<<" starved to death"<<endl;
+			p2=false;
+		}
+		if (p2thirst<=0){
+			cout<<p2name<<" died of dehydration"<<endl;
+			p2=false;
+		}
+		if (p2energy<=0){
+			cout<<p2name<<" collapsed of exhaustion and died"<<endl;
+			p2=false;
+		}
+	}
 }
 
 void travel() {
@@ -58,13 +124,24 @@ void travel() {
 	_sleep(1000);
 	cout<<name<<" loses "<<lostEng<<" energy, "<<lostHung<<" hunger, "<<lostThir<<" thirst"<<endl;
 	_sleep(1000);
+
+	if (p2==true){
+		lostHung=rand()%12;
+		lostThir=rand()%31;
+		p2energy=p2energy-lostEng;
+		p2hunger=p2hunger-lostHung;
+		p2thirst=p2thirst-lostThir;
+		cout<<p2name<<" loses "<<lostEng<<" energy, "<<lostHung<<" hunger, "<<lostThir<<" thirst"<<endl;
+		_sleep(1000);
+	}
+
 	displayStats();
 	_sleep(1000);
 	checkAlive();
 }
 
 void fight() {
-	int zombHealth, act;
+	int zombHealth, act, p2action;
 	string action;
 	bool cont;
 	cont=true;
@@ -108,12 +185,27 @@ void fight() {
 			cout<<name<<" killed the zombie"<<endl;
 			cont=false;
 		}
+	if (p2==true){
+		if (action=="hit"||action=="1"||action=="h"||action=="defend"||action=="2"||action=="d"){
+			p2action=rand()%2;
+			if (p2action==0){
+				act=rand()%21;
+				zombHealth=zombHealth-act;
+				_sleep(1000);
+				cout<<"Zombie hits "<<p2name<<" for "<<act<<" damage"<<endl;
+			}
+			else {
+				cout<<p2name<<" defends zombie's attack"<<endl;
+				_sleep(1000);
+			}
+		}
+	}
 	_sleep(1000);
 	}
 }
 
 void search() {
-	string ans;
+	string ans, p2ans;
 	int searchItem, zomb;
 	
 	if (alive==true){
@@ -169,6 +261,49 @@ void search() {
 					energy=100;
 				}
 			}
+
+			if (p2==true){
+				if (ans=="1"||ans=="a"||ans=="food"){
+					searchItem=rand()%81;
+					cout<<p2name<<" searches for food"<<endl;
+					_sleep(1000);
+					cout<<"They find food to restore "<<searchItem<<" hunger"<<endl;
+					p2hunger=p2hunger+searchItem;
+					if (p2hunger>100){
+						p2hunger=100;
+					}
+				}
+				if (ans=="2"||ans=="b"||ans=="drink"){
+					searchItem=rand()%41;
+					cout<<p2name<<" searches for water"<<endl;
+					_sleep(1000);
+					cout<<"They find enough to restore "<<searchItem<<" thirst"<<endl;
+					p2thirst=p2thirst+searchItem;
+					if (p2thirst>100){
+						p2thirst=100;
+					}
+				}
+				if (ans=="3"||ans=="c"||ans=="medication"||ans=="meds"){
+					searchItem=rand()%61;
+					cout<<p2name<<" searches for medication"<<endl;
+					_sleep(1000);
+					cout<<"They find meds to restore "<<searchItem<<" health"<<endl;
+					p2health=p2health+searchItem;
+					if (p2health>100){
+						p2health=100;
+					}
+				}
+				if (ans=="4"||ans=="d"||ans=="shelter"){
+					searchItem=rand()%101;
+					cout<<p2name<<" searches for shelter"<<endl;
+					_sleep(1000);
+					cout<<"They find shelter and sleep to restore "<<searchItem<<" energy"<<endl;
+					p2energy=p2energy+searchItem;
+					if (p2energy>100){
+						p2energy=100;
+					}
+				}	
+			}
 			_sleep(1000);
 			cout<<name<<" left the area"<<endl;
 		}
@@ -180,6 +315,7 @@ void mainLoop(){
 	while (alive==true) {
 		travel();
 		_sleep(1000);
+		findP2();
 		search();
 		_sleep(1000);
 	}
@@ -191,7 +327,7 @@ int main(void)
 
 	cout<<"***The Zombie Game***"<<endl;
 	_sleep(1000);
-	cout<<"v1.0 The Glitching Dead 2015"<<endl;
+	cout<<"v1.1 Z-Friend 2015"<<endl;
 	_sleep(1000);
 	cout<<"Please enter your name: ";
 	cin>>name;
