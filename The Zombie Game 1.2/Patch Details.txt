@@ -1,0 +1,9 @@
++ View friend's stats
++ Weapons
++ Determine friend's earch item
++ Commented Code
++ Reduced amount of energy lost during travelling
++ Added "(y/n)" to "Do you want to be friends?: "
++ Added "(1 word max)" to enter name and survivor's name
++ Output Survivor's health to zombie fight
++ Break process when player dies (fixed issue)
